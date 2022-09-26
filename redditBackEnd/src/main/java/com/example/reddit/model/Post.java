@@ -21,6 +21,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long postId;

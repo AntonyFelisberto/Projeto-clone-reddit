@@ -20,6 +20,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubReddit {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -32,4 +33,5 @@ public class SubReddit {
     private Instant createdDate;
     @ManyToOne(fetch = LAZY)
     private User user;
+
 }
