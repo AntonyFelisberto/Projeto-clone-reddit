@@ -17,14 +17,14 @@ import java.time.Instant;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private String userId;
+    private Long userId;
     @NotBlank(message = "Usuario é requerido")
     private String username;
     @NotBlank(message = "Senha é requerida")

@@ -15,10 +15,10 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
-@Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Builder
 public class SubReddit {
 
     @Id
@@ -27,7 +27,7 @@ public class SubReddit {
     @NotBlank(message = "o valor do nome é requerido")
     private String nome;
     @NotBlank(message = "o valor da mensagem é requerido")
-    private String mensagem;
+    private String description;
     @OneToMany(fetch = LAZY)
     private List<Post> posts;
     private Instant createdDate;
