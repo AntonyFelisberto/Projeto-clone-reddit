@@ -25,7 +25,7 @@ public class Vote {
     @NotNull
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId")
-    private Post postId;
+    private Post post;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User userId;
