@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.example.reddit.model.VoteType;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 

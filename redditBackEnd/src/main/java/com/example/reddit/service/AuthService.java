@@ -21,7 +21,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final MailServices mailServices;
+    private final MailService mailService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -35,7 +35,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = generateVerificationToken(user);
-        mailServices.sendMail(new NotificationEmail("POR FAVOR ATIVE SUA CONTA", user.getEmail(),"Obrigado por se logar na plataforma copia do reddit :) caso queira prosseguir click no link : http://localhost:8080/api/auth/accountVerification/"+token));
+        mailService.sendMail(new NotificationEmail("POR FAVOR ATIVE SUA CONTA", user.getEmail(),"Obrigado por se logar na plataforma copia do reddit :) caso queira prosseguir click no link : http://localhost:8080/api/auth/accountVerification/"+token));
     }
 
     private String generateVerificationToken(User user) {

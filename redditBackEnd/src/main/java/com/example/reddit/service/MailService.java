@@ -3,7 +3,6 @@ package com.example.reddit.service;
 import com.example.reddit.exceptions.SpringRedditException;
 import com.example.reddit.model.NotificationEmail;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class MailServices {
+public class MailService {
 
     private final JavaMailSender mailSender;
     private final MailContentBuilder mailContentBuilder;
