@@ -25,4 +25,5 @@ public class AuthController {
         authService.verifyAccount(token);
         return new ResponseEntity<>("CONTA ATIVADA COM SUCESSO", HttpStatus.OK);
     }
+
 }
