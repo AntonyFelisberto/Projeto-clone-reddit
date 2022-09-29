@@ -25,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private Long userId;
     @NotBlank(message = "Usuario é requerido")
-    private String username;
+    private String userName;
     @NotBlank(message = "Senha é requerida")
     private String password;
     @Email

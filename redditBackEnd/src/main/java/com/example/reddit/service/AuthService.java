@@ -1,6 +1,7 @@
 package com.example.reddit.service;
 
 import com.example.reddit.dto.RegisterRequest;
+import com.example.reddit.exceptions.SpringRedditException;
 import com.example.reddit.model.NotificationEmail;
 import com.example.reddit.model.User;
 import com.example.reddit.model.VerificationToken;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,7 +28,7 @@ public class AuthService {
     @Transactional
     public void signup(RegisterRequest registerRequest){
         User user = new User();
-        user.setUsername(registerRequest.getUsername());
+        user.setUserName(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
@@ -47,4 +49,17 @@ public class AuthService {
         verificationTokenRepository.save(verificationToken);
         return token;
     }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+        fetchUserAndEnable(verificationToken.orElseThrow(()-> new SpringRedditException("TOKEN INVALIDO")));
+    }
+
+    private void fetchUserAndEnable(VerificationToken verificationToken) {
+        String userName = verificationToken.getUser().getUserName();
+        User user = userRepository.findByUserName(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
 }
