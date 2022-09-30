@@ -1,5 +1,6 @@
 package com.example.reddit.service;
 
+import com.example.reddit.dto.LoginRequest;
 import com.example.reddit.dto.RegisterRequest;
 import com.example.reddit.exceptions.SpringRedditException;
 import com.example.reddit.model.NotificationEmail;
@@ -8,6 +9,7 @@ import com.example.reddit.model.VerificationToken;
 import com.example.reddit.repository.UserRepository;
 import com.example.reddit.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -60,6 +63,10 @@ public class AuthService {
         User user = userRepository.findByUserName(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    public void login(LoginRequest loginRequest){
+
     }
 
 }

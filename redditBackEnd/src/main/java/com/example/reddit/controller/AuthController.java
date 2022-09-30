@@ -1,5 +1,6 @@
 package com.example.reddit.controller;
 
+import com.example.reddit.dto.LoginRequest;
 import com.example.reddit.dto.RegisterRequest;
 import com.example.reddit.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -26,4 +27,8 @@ public class AuthController {
         return new ResponseEntity<>("CONTA ATIVADA COM SUCESSO", HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequest loginRequest){
+        authService.login(loginRequest);
+    }
 }
