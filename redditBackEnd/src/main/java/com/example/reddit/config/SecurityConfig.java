@@ -50,3 +50,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 }
+
+/* IMPLEMENTAÇÃO SEM DEPRECATED
+@EnableWebSecurity
+@AllArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
+
+        return httpSecurity.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+}*/
