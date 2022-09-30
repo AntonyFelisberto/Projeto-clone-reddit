@@ -10,6 +10,7 @@ import com.example.reddit.repository.UserRepository;
 import com.example.reddit.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,7 @@ public class AuthService {
     }
 
     public void login(LoginRequest loginRequest){
-
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
     }
 
 }
