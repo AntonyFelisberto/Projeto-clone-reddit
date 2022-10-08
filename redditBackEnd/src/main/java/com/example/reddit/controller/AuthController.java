@@ -1,5 +1,7 @@
 package com.example.reddit.controller;
 
+import com.example.reddit.dto.AuthenticationResponse;
+import com.example.reddit.dto.LoginRequest;
 import com.example.reddit.dto.RegisterRequest;
 import com.example.reddit.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -19,4 +21,16 @@ public class AuthController {
         authService.signup(registerRequest);
         return new ResponseEntity<>("Usuario registrado com sucesso", HttpStatus.OK);
     }
+
+    @GetMapping("accountVerification/{token}")
+    public ResponseEntity<String> verifyAcount(@PathVariable String token){
+        authService.verifyAccount(token);
+        return new ResponseEntity<>("CONTA ATIVADA COM SUCESSO", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
+    }
+
 }
