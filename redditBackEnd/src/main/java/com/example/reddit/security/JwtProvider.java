@@ -1,9 +1,11 @@
 package com.example.reddit.security;
 
 import com.example.reddit.exceptions.SpringRedditException;
-import com.example.reddit.model.User;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,18 +13,22 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 
+import java.security.KeyStore;
+
 @Service
+@Repository
+@Slf4j
 public class JwtProvider {
 
     private KeyStore keyStore;
 
-    public void init() throws CertificateException, IOException, NoSuchAlgorithmException {
+    public JwtProvider() {
         try {
             keyStore = KeyStore.getInstance("JKS");
-            InputStream resourceAsStream = getClass().getResourceAsStream("/springblog.jks");
+            InputStream resourceAsStream = getClass().getResourceAsStream("\\springblog.jks");
             keyStore.load(resourceAsStream, "secret".toCharArray());
-        }catch (KeyStoreException | NoSuchAlgorithmException erroNoCarregamentoDeChave){
-            throw new SpringRedditException("ERRO ENQUANTO CARREGANDO A CHAVE :"+erroNoCarregamentoDeChave);
+        }catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException erroNoCarregamentoDeChave){
+            throw new SpringRedditException("ERRO ENQUANTO CARREGANDO A CHAVE :"+erroNoCarregamentoDeChave.getMessage());
         }
     }
 
