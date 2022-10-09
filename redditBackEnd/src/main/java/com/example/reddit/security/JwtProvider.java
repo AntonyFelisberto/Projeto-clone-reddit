@@ -1,6 +1,7 @@
 package com.example.reddit.security;
 
 import com.example.reddit.exceptions.SpringRedditException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,8 @@ import java.security.cert.CertificateException;
 
 import java.security.KeyStore;
 
+import static io.jsonwebtoken.Jwts.parser;
+
 @Service
 @Repository
 @Slf4j
@@ -22,7 +25,7 @@ public class JwtProvider {
 
     private KeyStore keyStore;
 
-    public JwtProvider() {
+    public void initialize(){
         try {
             keyStore = KeyStore.getInstance("JKS");
             InputStream resourceAsStream = getClass().getResourceAsStream("\\springblog.jks");
@@ -47,5 +50,24 @@ public class JwtProvider {
             throw new SpringRedditException("ERRO ENQUANTO RECUPERANDO A CHAVE PRIVADA :"+erroNaRecuperacaoDeChave);
         }
     }
+
+    public boolean validateToken(String jwt){
+        parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
+        return true;
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        }catch (KeyStoreException e){
+            throw  new SpringRedditException("Exceção enquanto recuperando chave publica");
+        }
+    }
+
+    public String getUserNameFromJwt(String token){
+        Claims claim = parser().setSigningKey(getPublicKey()).parseClaimsJws(token).getBody();
+        return claim.getSubject();
+    }
+
 
 }
