@@ -27,7 +27,7 @@ public class SubReddit {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @NotBlank(message = "o valor do nome é requerido")
-    private String nome;
+    private String name;
     @NotBlank(message = "o valor da mensagem é requerido")
     private String description;
     @OneToMany(fetch = LAZY)

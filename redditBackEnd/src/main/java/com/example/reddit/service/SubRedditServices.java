@@ -32,12 +32,12 @@ public class SubRedditServices {
     }
 
     public SubReddit mapSubredditDto(SubredditDto subredditDto){
-        return SubReddit.builder().nome(subredditDto.getName()).description(subredditDto.getDescription()).build();
+        return SubReddit.builder().name(subredditDto.getName()).description(subredditDto.getDescription()).build();
     }
 
     private SubredditDto mapToDto(SubReddit subreddit) {
         return SubredditDto.builder()
-               .name(subreddit.getNome())
+               .name(subreddit.getName())
                 .id(subreddit.getId())
                 .numberOfPosts(subreddit.getPosts().size())
                .build();

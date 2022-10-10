@@ -84,5 +84,4 @@ public class AuthService {
         return new AuthenticationResponse(token, loginRequest.getUsername());
     }
 
-
 }

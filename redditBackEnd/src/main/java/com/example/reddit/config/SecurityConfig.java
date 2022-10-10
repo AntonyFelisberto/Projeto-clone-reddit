@@ -7,6 +7,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -32,87 +33,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-//@EnableWebSecurity
-//@AllArgsConstructor
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-//public class SecurityConfig {
-//
-//    private final UserDetailsService userDetailsService;
-//
-//    @Value("${jwt.public.key}")
-//    RSAPublicKey publicKey;
-//
-//    @Value("${jwt.private.key}")
-//    RSAPrivateKey privateKey;
-//
-//    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-//        return authenticationConfiguration.getAuthenticationManager();
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-//        httpSecurity.cors().and()
-//                .csrf().disable()
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers("/api/auth/**")
-//                        .permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/subreddit")
-//                        .permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/posts/")
-//                        .permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/posts/**")
-//                        .permitAll()
-//                        .antMatchers("/v2/api-docs",
-//                                "/configuration/ui",
-//                                "/swagger-resources/**",
-//                                "/configuration/security",
-//                                "/swagger-ui.html",
-//                                "/webjars/**")
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated())
-//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .exceptionHandling(exceptions -> exceptions
-//                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-//                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
-//                );
-//
-//        return httpSecurity.build();
-//    }
-//
-//    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
-//
-//    @Bean
-//    PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    JwtDecoder jwtDecoder(){
-//        return NimbusJwtDecoder.withPublicKey(this.publicKey).build();
-//    }
-//
-//    @Bean
-//    JwtEncoder jwtEncoder(){
-//        JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
-//        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-//        return new NimbusJwtEncoder(jwks);
-//    }
-//
-//}
-
-
-//MÉTODO DEPRECADO MAS FUNCIONA
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 @EnableWebSecurity
 @AllArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+@Configuration
+//@RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
@@ -123,14 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     RSAPrivateKey privateKey;
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
-
-    @Override
-    public void configure(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
@@ -157,9 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
                 );
+
+        return httpSecurity.build();
     }
 
-    @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
@@ -182,3 +107,80 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
 }
+
+
+//MÉTODO DEPRECADO MAS FUNCIONA
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//
+//@EnableWebSecurity
+//@AllArgsConstructor
+//public class SecurityConfig extends WebSecurityConfigurerAdapter{
+//
+//    private final UserDetailsService userDetailsService;
+//
+//    @Value("${jwt.public.key}")
+//    RSAPublicKey publicKey;
+//
+//    @Value("${jwt.private.key}")
+//    RSAPrivateKey privateKey;
+//
+//    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+//    @Override
+//    public AuthenticationManager authenticationManager() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+//
+//
+//    @Override
+//    public void configure(HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity.cors().and()
+//                .csrf().disable()
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .antMatchers("/api/auth/**")
+//                        .permitAll()
+//                        .antMatchers(HttpMethod.GET, "/api/subreddit")
+//                        .permitAll()
+//                        .antMatchers(HttpMethod.GET, "/api/posts/")
+//                        .permitAll()
+//                        .antMatchers(HttpMethod.GET, "/api/posts/**")
+//                        .permitAll()
+//                        .antMatchers("/v2/api-docs",
+//                                "/configuration/ui",
+//                                "/swagger-resources/**",
+//                                "/configuration/security",
+//                                "/swagger-ui.html",
+//                                "/webjars/**")
+//                        .permitAll()
+//                        .anyRequest()
+//                        .authenticated())
+//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .exceptionHandling(exceptions -> exceptions
+//                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+//                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+//                );
+//    }
+//
+//    @Override
+//    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    }
+//
+//    @Bean
+//    PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
+//
+//    @Bean
+//    JwtDecoder jwtDecoder(){
+//        return NimbusJwtDecoder.withPublicKey(this.publicKey).build();
+//    }
+//
+//    @Bean
+//    JwtEncoder jwtEncoder(){
+//        JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
+//        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+//        return new NimbusJwtEncoder(jwks);
+//    }
+//
+//}
