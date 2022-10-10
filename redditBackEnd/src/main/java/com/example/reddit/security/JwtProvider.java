@@ -1,73 +1,47 @@
 package com.example.reddit.security;
 
-import com.example.reddit.exceptions.SpringRedditException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Repository;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.*;
-import java.security.cert.CertificateException;
+import java.time.Instant;
 
-import java.security.KeyStore;
-
-import static io.jsonwebtoken.Jwts.parser;
 
 @Service
-@Repository
-@Slf4j
+@RequiredArgsConstructor
 public class JwtProvider {
 
-    private KeyStore keyStore;
+    private final JwtEncoder jwtEncoder;
 
-    public void initialize(){
-        try {
-            keyStore = KeyStore.getInstance("JKS");
-            InputStream resourceAsStream = getClass().getResourceAsStream("\\springblog.jks");
-            keyStore.load(resourceAsStream, "secret".toCharArray());
-        }catch (KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException erroNoCarregamentoDeChave){
-            throw new SpringRedditException("ERRO ENQUANTO CARREGANDO A CHAVE :"+erroNoCarregamentoDeChave.getMessage());
-        }
-    }
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
     public String generateToken(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
-        return Jwts.builder().setSubject(
-                principal.getUsername())
-                .signWith(getPrivateKey())
-                .compact();
+        return generateTokenWithUserName(principal.getUsername());
     }
 
-    private PrivateKey getPrivateKey() {
-        try{
-            return (PrivateKey) keyStore.getKey("springblog","secret".toCharArray());
-        }catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException erroNaRecuperacaoDeChave){
-            throw new SpringRedditException("ERRO ENQUANTO RECUPERANDO A CHAVE PRIVADA :"+erroNaRecuperacaoDeChave);
-        }
+    private String generateTokenWithUserName(String username) {
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusMillis(jwtExpirationInMillis))
+                .subject(username)
+                .claim("scope","ROLE_USER")
+                .build();
+
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public boolean validateToken(String jwt){
-        parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
-        return true;
+    public Long getJwtExpirationInMillis(){
+        return jwtExpirationInMillis;
     }
 
-    private PublicKey getPublicKey() {
-        try {
-            return keyStore.getCertificate("springblog").getPublicKey();
-        }catch (KeyStoreException e){
-            throw  new SpringRedditException("Exceção enquanto recuperando chave publica");
-        }
-    }
-
-    public String getUserNameFromJwt(String token){
-        Claims claim = parser().setSigningKey(getPublicKey()).parseClaimsJws(token).getBody();
-        return claim.getSubject();
-    }
 
 
 }

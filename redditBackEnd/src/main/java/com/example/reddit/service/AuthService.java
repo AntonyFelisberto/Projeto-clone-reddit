@@ -62,7 +62,8 @@ public class AuthService {
 
     public void verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        fetchUserAndEnable(verificationToken.orElseThrow(()-> new SpringRedditException("TOKEN INVALIDO")));
+        verificationToken.orElseThrow(()-> new SpringRedditException("TOKEN INVALIDO"));
+        fetchUserAndEnable(verificationToken.get());
     }
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
@@ -82,5 +83,6 @@ public class AuthService {
         String token = jwtProvider.generateToken(authenticate);
         return new AuthenticationResponse(token, loginRequest.getUsername());
     }
+
 
 }
