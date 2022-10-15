@@ -1,5 +1,6 @@
 package com.example.reddit.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class User {
     @NotBlank(message = "Usuario é requerido")
     private String userName;
     @NotBlank(message = "Senha é requerida")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Email
     @NotEmpty(message = "Email é requerido")

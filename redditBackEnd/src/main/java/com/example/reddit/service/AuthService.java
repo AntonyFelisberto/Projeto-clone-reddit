@@ -25,6 +25,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
@@ -37,7 +38,7 @@ public class AuthService {
     @Transactional
     public void signup(RegisterRequest registerRequest){
         User user = new User();
-        user.setUserName(registerRequest.getUsername());
+        user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
@@ -61,12 +62,13 @@ public class AuthService {
 
     public void verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        fetchUserAndEnable(verificationToken.orElseThrow(()-> new SpringRedditException("TOKEN INVALIDO")));
+        verificationToken.orElseThrow(()-> new SpringRedditException("TOKEN INVALIDO"));
+        fetchUserAndEnable(verificationToken.get());
     }
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
-        String userName = verificationToken.getUser().getUserName();
-        User user = userRepository.findByUserName(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
+        String userName = verificationToken.getUser().getUsername();
+        User user = userRepository.findByUsername(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
         user.setEnabled(true);
         userRepository.save(user);
     }
