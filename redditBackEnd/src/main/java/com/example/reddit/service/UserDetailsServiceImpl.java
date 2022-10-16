@@ -26,11 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username){
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByUserName(username);
         User user = userOptional.orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO NO SISTEMA"));
         return new org.springframework.security.core.userdetails.User
                 (
-                        user.getUsername(),
+                        user.getUserName(),
                         user.getPassword(),
                         user.isEnabled(),
                         true,

@@ -38,7 +38,7 @@ public class AuthService {
     @Transactional
     public void signup(RegisterRequest registerRequest){
         User user = new User();
-        user.setUsername(registerRequest.getUsername());
+        user.setUserName(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
@@ -67,8 +67,8 @@ public class AuthService {
     }
 
     private void fetchUserAndEnable(VerificationToken verificationToken) {
-        String userName = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
+        String userName = verificationToken.getUser().getUserName();
+        User user = userRepository.findByUserName(userName).orElseThrow(() -> new SpringRedditException("USUARIO NÃO ENCONTRADO"));
         user.setEnabled(true);
         userRepository.save(user);
     }
@@ -81,7 +81,7 @@ public class AuthService {
                 ));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        return new AuthenticationResponse(token,loginRequest.getUsername());
     }
 
 }

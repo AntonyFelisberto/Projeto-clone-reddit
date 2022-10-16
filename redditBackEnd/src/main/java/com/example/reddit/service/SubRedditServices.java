@@ -26,13 +26,16 @@ public class SubRedditServices {
         return subredditDto;
     }
 
-    @Transactional(readOnly = true)
-    public List<SubredditDto> getAll() {
-       return subRedditRepository.findAll().stream().map(this::mapToDto).collect(toList());
+    public SubReddit mapSubredditDto(SubredditDto subredditDto){
+        return SubReddit.builder()
+                .name(subredditDto.getName())
+                .description(subredditDto.getDescription())
+                .build();
     }
 
-    public SubReddit mapSubredditDto(SubredditDto subredditDto){
-        return SubReddit.builder().name(subredditDto.getName()).description(subredditDto.getDescription()).build();
+    @Transactional(readOnly = true)
+    public List<SubredditDto> getAll() {
+        return subRedditRepository.findAll().stream().map(this::mapToDto).collect(toList());
     }
 
     private SubredditDto mapToDto(SubReddit subreddit) {
